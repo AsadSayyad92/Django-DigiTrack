@@ -1,0 +1,96 @@
+{% load static %}
+<div class="left-side-bar" style="background:#031e23;">
+    <div class="sidebar-menu">
+        <ul id="accordion-menu">
+            <div class="brand-logo">
+                <a href="/admin_home">
+                    <img src="{% static "vendors/images/index.jpeg" alt="" %}"/>
+                </a>
+                <div class="close-sidebar" data-toggle="left-sidebar-close">
+                    <i class="ion-close-round"></i>
+                </div>
+            </div>
+            <li class="dropdown">
+                <a href="/admin_home" class="dropdown-toggle no-arrow">
+                    
+                    <span class="micon bi bi-house"></span
+                    ><span class="mtext">Home</span>
+                </a>
+            </li>
+            <li class="dropdown">
+                <a href="javascript:;" class="dropdown-toggle">
+                    <span class="micon  bi bi-person-video3"></span
+                    ><span class="mtext">Staff</span>
+                </a>
+                <ul class="submenu">
+                    <li><a href="/manage_staff">Manage Staff</a></li>
+                    <li><a href="/add_staff">Add Staff</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="javascript:;" class="dropdown-toggle">
+                    <span class="micon bi bi-person-badge-fill"></span
+                    ><span class="mtext">Student</span>
+                </a>
+                <ul class="submenu">
+                    <li><a href="/manage_student">Manage Student</a></li>
+                    <li><a href="/add_student">Add Student</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="javascript:;" class="dropdown-toggle ">
+                    <span class="micon bi bi-clock-fill"></span
+                    ><span class="mtext"> Courses</span>
+                </a>
+                <ul class="submenu">
+                    <li><a href="/manage_course">Manage Courses</a></li>
+                    <li><a href="/add_course">Add Course</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="javascript:;" class="dropdown-toggle">
+                    <span class="micon bi bi-file-earmark-text-fill"></span
+                    ><span class="mtext">Subjects</span>
+                </a>
+                <ul class="submenu">
+                    <li><a href="/manage_subject">Manage Subject</a></li>
+                    <li><a href="/add_subject">Add Subject</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a class="dropdown-toggle">
+                    <span class="micon bi bi-clipboard-check-fill"></span>
+                    <span class="mtext">Academic Year</span>
+                </a>
+                <ul class="submenu">
+                    <li><a href="/add_session">Add Session</a></li>
+                    <li><a href="/manage_session">View Sessions</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="javascript:;" class="dropdown-toggle">
+                    <span class="micon bi bi-calendar4-week"></span
+                    ><span class="mtext">Attendance</span>
+                </a>
+                <ul class="submenu">
+                    <li><a href="/admin_view_attendance">View Attendance</a></li>     
+                    <li><a href="/mark_attendance">Mark Attendance</a></li>  
+                    <li><a href="/update_attendance">Update Attendance</a></li> 
+                    <li><a href="/delete_attendance_view">Delete Attendance</a></li> 
+                 </ul>
+            </li>
+            <li class="dropdown">
+                <a href="/admin_generate_report" class="dropdown-toggle no-arrow">
+                    <span class="micon bi bi-clipboard-check-fill"></span
+                    ><span class="mtext">Generate Report</span>
+                </a>
+            </li>
+            <li class="dropdown">
+                <a href="/course_data" class="dropdown-toggle no-arrow">
+                    <span class="micon bi bi-clipboard-check-fill"></span
+                    ><span class="mtext">Course-wise Graphs</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>

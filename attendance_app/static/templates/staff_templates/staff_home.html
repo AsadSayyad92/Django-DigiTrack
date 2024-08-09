@@ -1,0 +1,143 @@
+{% extends 'staff_templates/base_template.html' %}
+{% block page_title %}
+Home
+{% endblock page_title %}
+{% block main_content %}
+
+<div class="main-container">
+    <div class="xs-pd-20-10 pd-ltr-20">
+        <div class="title pb-20">
+            <h2 class="h3 mb-0">Home</h2>
+        </div>
+        <div class="row pb-10">
+            <div class="col-xl-3 col-lg-3 col-md-6 mb-20" style="text-align: center;">
+                <div class="card-box height-100-p widget-style2">
+                        <div class="widget-data">
+                            <div class="weight-700 font-24 text-dark">{{ students_count }}</div>
+                            <div class="font-14 text-secondary weight-700">
+                                Students under me
+                            </div>
+                        </div>
+                </div>
+            </div>
+<div class="col-xl-3 col-lg-3 col-md-6 mb-20" style="text-align: center;">
+                <div class="card-box height-100-p widget-style2">
+                        <div class="widget-data">
+                            <div class="weight-700 font-24 text-dark">{{ average_attendance_percentage }}</div>
+                            <div class="font-14 text-secondary weight-700">
+                                Avg. Attendance Percentage
+                            </div>
+                        </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-6 mb-20" style="text-align: center;">
+                <div class="card-box height-100-p widget-style2">
+                        <div class="widget-data">
+                            <div class="weight-700 font-24 text-dark">{{ subject_count }}</div>
+                            <div class="font-14 text-secondary weight-700">
+                                Total Subjects under me
+                            </div>
+                        </div> 
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-6 mb-20" style="text-align: center;">
+                <div class="card-box height-100-p widget-style2">
+                        <div class="widget-data" >
+                            <div class="weight-700 font-24 text-dark">{{ total_lectures_taken }}</div>
+                            <div class="font-14 text-secondary weight-700">Total Lectures Taken</div>
+                        </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <h2 class="h3 mb-0">Student Attendance Data</h2>
+                <br>
+              <div class="card-box height-350-p">
+                <div class="card-body">
+                  <div id="barChart2"></div>
+                </div>
+              </div>
+            </div>                        
+          </div>
+    </div>
+</div>
+<div class="mobile-menu-overlay"></div>
+
+{% endblock main_content %}
+{% block custom_js %}
+<script>
+  var subjectList = {{ subject_list|safe }};
+  var attendancePercentages = {{ attendance_percentages|safe }};
+
+  var options = {
+    chart: {
+      height: 400,
+      type: 'bar',
+      toolbar: {
+        show: true,
+        tools: {
+          download: true,
+          selection: true,
+          zoom: true,
+          zoomin: true,
+          zoomout: true,
+          pan: true
+        }
+      }
+    },
+    plotOptions: {
+      bar: {
+        horizontal: false
+      }
+    },
+    colors: ['#3b8bba'],
+    series: [{
+      name: 'Attendance Percentage',
+      data: attendancePercentages
+    }],
+    xaxis: {
+      categories: subjectList,
+      labels: {
+        style: {
+          fontSize: '12px'
+        }
+      },
+      title: {
+        text: 'Subjects',
+        style: {
+          fontSize: '14px'
+        }
+      }
+    },
+    yaxis: {
+      labels: {
+        formatter: function (value) {
+          return value + '%';
+        },
+        style: {
+          fontSize: '12px'
+        }
+      },
+      title: {
+        text: 'Attendance Percentage',
+        style: {
+          fontSize: '14px'
+        }
+      },
+      min: 0,
+      max: 100
+    },
+    legend: {
+      position: 'bottom',
+      horizontalAlign: 'center',
+      offsetX: 40
+    }
+  };
+    var chart = new ApexCharts(document.querySelector("#barChart2"), options);
+    chart.render();
+
+  </script>
+{% endblock custom_js %}
+
+

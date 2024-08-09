@@ -1,0 +1,82 @@
+{% extends 'staff_templates/base_template.html' %}
+
+{% block page_title %}
+    Attendance Table
+{% endblock page_title %}
+
+{% block main_content %}
+
+<section class="content">
+    <div class="main-container">
+        <div class="pd-ltr-20 xs-pd-20-10">
+            <div class="card-box mb-30">
+                <div class="pd-20">
+                    <h4 class="text-blue h4">Attendance Report </h4>
+                   <h4 class="text-black h5">Subject  : {{ subject_name }} |  Start Date :{{ start_date }} | End Date  :{{ end_date }}</h4>
+                    <div class="col-md-6 col-sm-12 ">
+                        <button id="export-btn" class="btn btn-primary" style="text-align: right;">Export to XLSX</button> 
+                    </div>
+                </div>
+
+
+                <div class="pb-20">
+                    <table id="attendance-table"  class="checkbox-datatable table nowrap">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <div class="dt-checkbox">
+                                        <input
+                                            type="checkbox"
+                                            name="select_all"
+                                            value="1"
+                                            id="example-select-all"
+                                        />
+                                        <span class="dt-checkbox-label"></span>
+                                    </div>
+                                </th>
+                                    <th>Student Name</th>
+                                    <th>Total Lectures Taken</th>
+                                    <th>Present Days</th>
+                                    <th>Absent Days</th>
+                                    <th>Attendance Percentage</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for student in students %}
+                                <tr>
+                                    <td></td>
+                                    <td>{{ student.admin.first_name }} {{ student.admin.last_name }}</td>
+                                    <td>{{ student.total_lectures_taken }}</td>
+                                    <td>{{ student.present_days }}</td>
+                                    <td>{{ student.absent_days }}</td>
+                                    <td>{{ student.attendance_percentage }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock main_content %}
+{% block custom_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.2/FileSaver.min.js"></script>
+<script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+<script>
+    // Function to convert table to XLSX format
+    function exportTableToXLSX() {
+        const table = document.getElementById('attendance-table');
+        const wb = XLSX.utils.table_to_book(table, { sheet: 'Attendance Report' });
+        const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+        saveAs(new Blob([wbout], { type: 'application/octet-stream' }), 'attendance_table.xlsx');
+    }
+
+    // Attach click event listener to export button
+    const exportBtn = document.getElementById('export-btn');
+    exportBtn.addEventListener('click', exportTableToXLSX);
+</script>
+{% endblock custom_js %}

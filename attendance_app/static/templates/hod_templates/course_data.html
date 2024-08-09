@@ -1,0 +1,110 @@
+{% extends 'hod_templates/base_template.html' %}
+
+{% block main_content %}
+
+<div class="main-container">
+    <div class="xs-pd-20-10 pd-ltr-20">
+        
+    </div>
+
+    {% for course_data in course_data_list %}
+    <div class="row">
+        <div class="col-lg-12">
+            <h2 class="h3 mb-0">Course Name : {{ course_data.name }}</h2>
+            <br>
+            <div class="card-box height-350-p">
+                <div class="card-body">
+                    <div id="attendance-trend-chart-{{ course_data.course_id }}"></div>
+                </div>
+            </div>
+            <br>
+        </div>
+    </div>
+    {% endfor %}
+
+</div>
+<div class="mobile-menu-overlay"></div>
+
+{% endblock main_content %}
+
+{% block custom_js %}
+<script>
+    // Loop through the course_data_list and render multiple charts
+    {% for course_data in course_data_list %}
+    var attendanceData{{ course_data.course_id }} = {
+        dates: [{% for date in course_data.attendance_trend_data.dates|slice:"-30:" %}new Date({{ date.year }}, {{ date.month|add:"-1" }}, {{ date.day }}),{% endfor %}],
+        attendance_percentages: {{ course_data.attendance_trend_data.attendance_percentages|slice:"-30:"|safe }},
+    };
+
+    // Create an array of objects combining dates and attendance percentages
+    var dataPoints{{ course_data.course_id }} = attendanceData{{ course_data.course_id }}.dates.map(function(date, index) {
+        return {
+            x: date,
+            y: parseFloat(attendanceData{{ course_data.course_id }}.attendance_percentages[index].toFixed(2))
+        };
+    });
+
+    // Sort the dataPoints array based on dates in ascending order
+    dataPoints{{ course_data.course_id }}.sort(function(a, b) {
+        return a.x - b.x;
+    });
+
+    // Extract the sorted dates and attendance percentages
+    var sortedDates{{ course_data.course_id }} = dataPoints{{ course_data.course_id }}.map(function(dataPoint) {
+        return dataPoint.x;
+    });
+
+    var sortedPercentages{{ course_data.course_id }} = dataPoints{{ course_data.course_id }}.map(function(dataPoint) {
+        return dataPoint.y;
+    });
+
+    // Format the dates
+    var formattedDates{{ course_data.course_id }} = sortedDates{{ course_data.course_id }}.map(function(date) {
+        return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+    });
+
+    // Prepare the data for ApexCharts
+    var chartData{{ course_data.course_id }} = {
+        series: [{
+            name: 'Attendance Percentage',
+            data: sortedPercentages{{ course_data.course_id }},
+        }],
+        xaxis: {
+            categories: formattedDates{{ course_data.course_id }},
+        },
+    };
+
+    // Customize the chart options
+    var chartOptions{{ course_data.course_id }} = {
+        chart: {
+            type: 'line',
+            height: 350,
+        },
+        series: chartData{{ course_data.course_id }}.series,
+        xaxis: chartData{{ course_data.course_id }}.xaxis,
+        colors: ['#3366FF'], // Customize the line color
+        dataLabels: {
+            enabled: true,
+            offsetY: -10,
+            style: {
+                fontSize: '12px',
+                colors: ['#333'], // Customize the data label color
+            },
+        },
+        stroke: {
+            width: 3, // Customize the line thickness
+        },
+        tooltip: {
+            style: {
+                fontSize: '12px',
+            },
+        },
+    };
+
+    // Render the attendance trend chart using ApexCharts
+    var attendanceChart{{ course_data.course_id }} = new ApexCharts(document.querySelector("#attendance-trend-chart-{{ course_data.course_id }}"), chartOptions{{ course_data.course_id }});
+
+    attendanceChart{{ course_data.course_id }}.render();
+    {% endfor %}
+</script>
+{% endblock custom_js %}

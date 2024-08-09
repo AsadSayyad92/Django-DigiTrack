@@ -1,0 +1,104 @@
+{% extends 'student_templates/base_template.html' %}
+{% block page_title %}
+Home
+{% endblock page_title %}
+{% block main_content %}
+<div class="main-container">
+    <div class="xs-pd-20-10 pd-ltr-20">
+        <div class="title pb-20">
+            <h2 class="h3 mb-0">Home</h2>
+        </div>
+        <div class="row pb-10">
+            <div class="col-xl-3 col-lg-3 col-md-6 mb-20" style="text-align: center;">
+                <div class="card-box height-100-p widget-style2">
+                        <div class="widget-data">
+                            <div class="weight-700 font-24 text-dark">{{ total_attendance }}</div>
+                            <div class="font-14 text-secondary weight-700">
+                                Total Attendance
+                            </div>
+                        </div>
+                </div>
+            </div>
+<div class="col-xl-3 col-lg-3 col-md-6 mb-20" style="text-align: center;">
+                <div class="card-box height-100-p widget-style2">
+                        <div class="widget-data">
+                            <div class="weight-700 font-24 text-dark">{{ attendance_present_list_student }}</div>
+                            <div class="font-14 text-secondary weight-700">
+                                Present
+                            </div>
+                        </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-6 mb-20" style="text-align: center;">
+                <div class="card-box height-100-p widget-style2">
+                        <div class="widget-data">
+                            <div class="weight-700 font-24 text-dark">{{ attendance_absent_list_student }}</div>
+                            <div class="font-14 text-secondary weight-700">
+                                Absent
+                            </div>
+                        </div> 
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-6 mb-20" style="text-align: center;">
+                <div class="card-box height-100-p widget-style2">
+                        <div class="widget-data" >
+                            <div class="weight-700 font-24 text-dark">{{ subjects }}</div>
+                            <div class="font-14 text-secondary weight-700">Subjects</div>
+                        </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <h2 class="h3 mb-0">Attendance Percentage</h2>
+                  <div class="card-box ">
+                    <div class="card-body" style="width: 500px;">
+                      <div id="chart"></div>
+                    </div>
+                  </div>
+                </div>                        
+              </div>
+        </div>
+
+        </div>
+    </div>
+</div>
+<div class="mobile-menu-overlay"></div>
+
+{% endblock main_content %}
+{% block custom_js %}
+<script>
+    $(document).ready(function() {
+      var attendance_present = {{ attendance_present_list_student }};
+      var attendance_absent = {{ attendance_absent_list_student }};
+      
+      var options = {
+        chart: {
+          height: 400,
+          type: 'pie',
+          toolbar: {
+            show: true,
+            tools: {
+              download: true,
+              selection: true,
+              zoom: true,
+              zoomin: true,
+              zoomout: true,
+              pan: true
+            }
+          }
+        },
+        series: [attendance_present, attendance_absent],
+        labels: ['Present', 'Absent'],
+        colors: ['#00a65a', '#f56954'],
+        legend: {
+          position: 'bottom',
+          horizontalAlign: 'center',
+          offsetX: 40
+        }
+      };
+  
+      var chart = new ApexCharts(document.querySelector("#chart"), options);
+      chart.render();
+    });
+  </script>
+{% endblock custom_js %}

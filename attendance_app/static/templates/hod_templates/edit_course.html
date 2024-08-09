@@ -1,0 +1,48 @@
+{% extends 'hod_templates/base_template.html' %}
+
+{% block main_content %}
+<div class="main-container">
+	<div class="pd-ltr-20">
+		<div class="pd-20 card-box mb-30">
+			<div class="clearfix">
+				<div class="pull-left">
+					<h3 class="text-blue h4">Edit Course</h3>
+                    <h4 class="text-black h5"> ID : {{ timetable.lecture_id }}</h4>
+					<br>
+				</div>
+			</div>
+			<form action="/edit_course_save" method="post">
+				{% csrf_token %}
+			<div class="form-group row">
+				<label class="col-sm-12 col-md-2 col-form-label">Start Time</label>
+				<div class="col-sm-12 col-md-10">
+					<input type="text" class="form-control" name="course" placeholder="Enter Course" value="{{ course.course_name }}">
+					<input type="hidden"  name="course_id"  value="{{ course.id }}">
+
+				</div>
+			</div>
+			
+			<div class="clearfix">
+				<button type="submit" class="btn btn-primary">Save Course</button>
+				</div>
+			</form>
+			<div class="form-group">
+				{% if messages %}
+				  {% for message in messages %}
+				  {% if message.tags == 'error' %}
+				  <div class="alert alert-danger" style="margin-top:10px">{{ message }}</div>
+				  {% endif %}
+				  {% if message.tags == 'success' %}
+				  <div class="alert alert-success" style="margin-top:10px">{{ message }}</div>
+				  {% endif %}
+				  {% endfor %}
+				{% endif %}
+			  </div>		
+		</div>
+		</div>
+	</div>
+
+
+<div class="mobile-menu-overlay"></div>
+
+{% endblock main_content %}

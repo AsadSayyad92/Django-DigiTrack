@@ -1,0 +1,201 @@
+course_id = request.POST.get("course")
+    start_date = request.POST.get("start_date")
+    end_date = request.POST.get("end_date")
+
+    start_date_parse = datetime.datetime.strptime(start_date, "%Y-%m-%d").date()
+    end_date_parse = datetime.datetime.strptime(end_date, "%Y-%m-%d").date()
+
+    course_obj = Courses.objects.get(id=course_id)
+    subjects = Subjects.objects.filter(course_id=course_obj)
+
+    students = Students.objects.filter(
+        course_id=course_obj,
+        session_year_id__session_start_year__lte=start_date_parse,
+        session_year_id__session_end_year__gte=end_date_parse
+    )
+
+    student_data = []
+
+    for student in students:
+        attendance_data = []
+        for subject in subjects:
+            total_lectures_taken = Attendance.objects.filter(
+                attendance_date__range=(start_date_parse, end_date_parse),
+                subject_id=subject
+            ).count()
+
+            attendance_reports = AttendanceReport.objects.filter(
+                attendance_id__in=Attendance.objects.filter(
+                    attendance_date__range=(start_date_parse, end_date_parse),
+                    subject_id=subject
+                ),
+                student_id=student
+            )
+            absent_days = attendance_reports.filter(status=False).count()
+            present_days = attendance_reports.filter(status=True).count()
+
+            if total_lectures_taken > 0:
+                attendance_percentage = int((present_days / total_lectures_taken) * 100)
+            else:
+                attendance_percentage = 0
+
+            attendance_data.append({
+                'subject': subject.subject_name,
+                'total_lectures_taken': total_lectures_taken,
+                'attendance_percentage': attendance_percentage
+            })
+
+        student_data.append({
+            'student_id': student.id,
+            'student_name': f"{student.admin.first_name} {student.admin.last_name}",
+            'attendance_data': attendance_data
+        })
+
+    column_names = ['ID', 'Student Name']
+    for subject in subjects:
+        column_names.append(f"{subject.subject_name}")
+        column_names.append(f"{subject.subject_name} Attendance Percentage")
+
+    context = {
+        'column_names': column_names,
+        'student_data': student_data
+    }
+
+
+course wise percentage
+
+
+     
+    course_data = []
+
+    courses = Courses.objects.all()
+
+    for course in courses:
+        course_obj = Courses.objects.get(id=course.id)
+        subjects = Subjects.objects.filter(course_id=course_obj)
+
+        students = Students.objects.filter(
+            course_id=course_obj,
+        )
+
+        total_lectures_taken = 0
+        total_present_days = 0
+
+        for student in students:
+            for subject in subjects:
+                attendance_reports = AttendanceReport.objects.filter(
+                    attendance_id__in=Attendance.objects.filter(
+                        subject_id=subject
+                    ),
+                    student_id=student
+                )
+
+                present_days = attendance_reports.filter(status=True).count()
+                total_present_days += present_days
+
+                total_lectures_taken += Attendance.objects.filter(
+                    subject_id=subject
+                ).count()
+
+        if total_lectures_taken > 0:
+            attendance_percentage = int((total_present_days / total_lectures_taken) * 100)
+        else:
+            attendance_percentage = 0
+
+        course_data.append({
+            'course_id': course.id,
+            'course_name': course.course_name,
+            'attendance_percentage': attendance_percentage
+        })
+
+    context = {
+        'course_data': course_data
+    }
+
+     <!-- courses.html -->
+                <thead>
+                    <tr>
+                        <th>Course ID</th>
+                        <th>Course Name</th>
+                        <th>Attendance Percentage</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for course in course_data %}
+                    <tr>
+                        <td>{{ course.course_id }}</td>
+                        <td>{{ course.course_name }}</td>
+                        <td>{{ course.attendance_percentage }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+# subject wise attendance 
+    subject_data = []
+
+    subjects = Subjects.objects.all()
+
+    for subject in subjects:
+        subject_obj = Subjects.objects.get(id=subject.id)
+        students = Students.objects.filter(course_id=subject_obj.course_id)
+
+        total_lectures_taken = 0
+        total_present_days = 0
+
+        for student in students:
+            attendance_reports = AttendanceReport.objects.filter(
+                attendance_id__in=Attendance.objects.filter(
+                    subject_id=subject
+                ),
+                student_id=student
+            )
+
+            present_days = attendance_reports.filter(status=True).count()
+            total_present_days += present_days
+
+            total_lectures_taken += Attendance.objects.filter(
+                subject_id=subject
+            ).count()
+
+        if total_lectures_taken > 0:
+            attendance_percentage = int((total_present_days / total_lectures_taken) * 100)
+        else:
+            attendance_percentage = 0
+
+        subject_data.append({
+            'subject_id': subject.id,
+            'subject_name': subject.subject_name,
+            'attendance_percentage': attendance_percentage
+        })
+
+    context = {
+        'subject_data': subject_data
+    }
+
+<thead>
+                    <tr>
+                        <th>Subject ID</th>
+                        <th>Subject Name</th>
+                        <th>Attendance Percentage</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for subject in subject_data %}
+                    <tr>
+                        <td>{{ subject.subject_id }}</td>
+                        <td>{{ subject.subject_name }}</td>
+                        <td>{{ subject.attendance_percentage }}%</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+                 # Print total lectures taken in each course
+    for course_id, total_lectures_taken in course_lectures.items():
+        course_name = Courses.objects.get(id=course_id).course_name
+        print(f"Total lectures taken in {course_name}: {total_lectures_taken}")
+
+    # Calculate and print average attendance percentage for each course
+    for course_id, attendance_percentages in course_attendance_percentages.items():
+        course_name = Courses.objects.get(id=course_id).course_name
+        average_attendance_percentage = sum(attendance_percentages) / len(attendance_percentages)
+        print(f"Average attendance percentage in {course_name}: {average_attendance_percentage}")

@@ -1,0 +1,37 @@
+{% load static %}
+<div class="left-side-bar" style="background: #031e23;">
+    <div class="sidebar-menu">
+        <ul id="accordion-menu">
+            <div class="brand-logo">
+                <a href="/staff_home">
+                    <img src="{% static "vendors/images/index.jpeg" alt="" %}">
+                </a>
+                <div class="close-sidebar" data-toggle="left-sidebar-close">
+                    <i class="ion-close-round"></i>
+                </div>
+            </div>
+            <li class="dropdown">
+                <a href="/staff_home" class="dropdown-toggle no-arrow">
+                    <span class="micon bi bi-house"></span
+                    ><span class="mtext">Home</span>
+                </a>
+            </li>
+            <li class="dropdown">
+                <a href="javascript:;" class="dropdown-toggle">
+                    <span class="micon bi bi-calendar4-week"></span
+                    ><span class="mtext">Attendance</span>
+                </a>
+                <ul class="submenu">
+                    <li><a href="/staff_view_attendance">View Attendance</a></li>     
+                    <li><a href="/staff_update_attendance">Update Attendance</a></li>  
+                 </ul>
+            </li>
+            <li class="dropdown">
+                <a href="/staff_generate_report" class="dropdown-toggle no-arrow">
+                    <span class="micon bi bi-clipboard-check-fill"></span
+                    ><span class="mtext">Generate Report</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>

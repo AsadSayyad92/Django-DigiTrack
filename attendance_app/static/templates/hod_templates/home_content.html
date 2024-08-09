@@ -1,0 +1,131 @@
+{% extends 'hod_templates/base_template.html' %}
+{% block main_content %}
+
+<div class="main-container">
+    <div class="xs-pd-20-10 pd-ltr-20">
+        <div class="title pb-20">
+            <h2 class="h3 mb-0">Home</h2>
+        </div>
+        <div class="row pb-10">
+          {% for course in course_data %}
+          <div class="col-xl-3 col-lg-3 col-md-6 mb-20" style="text-align: center;">
+              <div class="card-box height-95-p widget-style2">
+                  <div class="widget-data">
+                      <div class="font-14 text-secondary weight-700">{{ course.course_name }}</div>
+                      <div class="font-14 text-secondary weight-700">Total Lectures Taken:</div>
+                      <div class="weight-700 font-24 text-dark">{{ course.total_lectures_taken }}</div>
+                  </div>
+              </div>
+          </div>
+          
+          <div class="col-xl-3 col-lg-3 col-md-6 mb-20" style="text-align: center;">
+              <div class="card-box height-95-p widget-style2">
+                  <div class="widget-data">
+                      <div class="font-14 text-secondary weight-700">{{ course.course_name }}</div>
+                      <div class="font-14 text-secondary weight-700">Average Attendance Percentage:</div>
+                      <div class="weight-700 font-24 text-dark">{{ course.average_attendance_percentage }}%</div>
+                  </div>
+              </div>
+          </div>
+          {% endfor %}
+          
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <h2 class="h3 mb-0">Student Attendance Data</h2>
+                <br>
+              <div class="card-box height-350-p">
+                <div class="card-body">
+                  <div id="attendance-trend-chart"></div>
+                </div>
+              </div>
+            </div>                        
+          </div>
+    </div>
+</div>
+<div class="mobile-menu-overlay"></div>
+
+{% endblock main_content %}
+{% block custom_js %}
+<script>
+  // Retrieve the attendance trend data from the Django view
+  var attendanceData = {
+      dates: [{% for date in attendance_trend_data.dates|slice:"-30:" %}new Date({{ date.year }}, {{ date.month|add:"-1" }}, {{ date.day }}),{% endfor %}],
+      attendance_percentages: {{ attendance_trend_data.attendance_percentages|slice:"-30:"|safe }},
+  };
+
+  // Create an array of objects combining dates and attendance percentages
+  var dataPoints = attendanceData.dates.map(function(date, index) {
+      return {
+          x: date,
+          y: parseFloat(attendanceData.attendance_percentages[index].toFixed(2))
+      };
+  });
+
+  // Sort the dataPoints array based on dates in ascending order
+  dataPoints.sort(function(a, b) {
+      return a.x - b.x;
+  });
+
+  // Extract the sorted dates and attendance percentages
+  var sortedDates = dataPoints.map(function(dataPoint) {
+      return dataPoint.x;
+  });
+
+  var sortedPercentages = dataPoints.map(function(dataPoint) {
+      return dataPoint.y;
+  });
+
+  // Format the dates
+  var formattedDates = sortedDates.map(function(date) {
+      return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+  });
+
+  // Prepare the data for ApexCharts
+  var chartData = {
+      series: [{
+          name: 'Attendance Percentage',
+          data: sortedPercentages,
+      }],
+      xaxis: {
+          categories: formattedDates,
+      },
+  };
+
+  // Customize the chart options
+  var chartOptions = {
+      chart: {
+          type: 'line',
+          height: 350,
+      },
+      series: chartData.series,
+      xaxis: chartData.xaxis,
+      colors: ['#3366FF'], // Customize the line color
+      dataLabels: {
+          enabled: true,
+          offsetY: -10,
+          style: {
+              fontSize: '12px',
+              colors: ['#333'], // Customize the data label color
+          },
+      },
+      stroke: {
+          width: 3, // Customize the line thickness
+      },
+      tooltip: {
+          style: {
+              fontSize: '12px',
+          },
+      },
+  };
+
+  // Render the attendance trend chart using ApexCharts
+  var attendanceChart = new ApexCharts(document.querySelector("#attendance-trend-chart"), chartOptions);
+
+  attendanceChart.render();
+</script>
+
+
+{% endblock custom_js %}
+
+

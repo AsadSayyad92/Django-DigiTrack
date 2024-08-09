@@ -1,0 +1,87 @@
+{% extends 'hod_templates/base_template.html' %}
+
+{% block main_content %}
+<div class="main-container">
+	<div class="pd-ltr-20">
+		<div class="pd-20 card-box mb-30">
+			<div class="clearfix">
+				<div class="pull-left">
+					<h3 class="text-blue h4">Edit Student </h3>
+					<h4 class="text-black h5">Username : {{ student.admin.username }} |  ID : {{ student.admin.id }}</h4>
+					<br>
+				</div>
+			</div>
+            <form action="/edit_student_save" method="post">
+                    {% csrf_token %}
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">ID Number</label>
+                    <div class="col-sm-12 col-md-10">
+                        <input type="hidden" name="student_id" value="{{ student.admin.id }}">
+                        <input class="form-control" placeholder="Enter your Username Here" type="text" name="card_number" value="{{ student.card_number }}">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Email Address</label>
+                    <div class="col-sm-12 col-md-10">
+                        <input class="form-control" type="email" placeholder="Enter your email address" name="email" value="{{ student.admin.email }}">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Username</label>
+                    <div class="col-sm-12 col-md-10">
+                        <input class="form-control" placeholder="Enter your Username Here" type="text" name="username" value="{{ student.admin.username }}">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">First Name</label>
+                    <div class="col-sm-12 col-md-10">
+                        <input class="form-control " placeholder="Enter your First Name" type="text" name="first_name" value="{{ student.admin.first_name }}">
+                    </div>				
+
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Last Name</label>
+                    <div class="col-sm-12 col-md-10">
+                        <input class="form-control " placeholder="Enter your Last name" type="text" name="last_name" value="{{ student.admin.last_name }}">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Address</label>
+                    <div class="col-sm-12 col-md-10">
+                        <input class="form-control " placeholder="Enter your Address" type="text" name="address" value="{{ student.address }}">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-12 col-md-2 col-form-label">Gender</label>
+                    <div class="col-sm-12 col-md-10">
+                        <select class="form-control" name="gender" value="{{ student.admin.gender }}">
+                            <option>Male</option>
+                            <option>Female</option>
+                        </select>
+                </div>
+                </div>
+                
+			<div class="clearfix">
+				<button type="submit" class="btn btn-primary">Save Student</button>
+				</div>
+			</form>
+			<div class="form-group">
+				{% if messages %}
+				  {% for message in messages %}
+				  {% if message.tags == 'error' %}
+				  <div class="alert alert-danger" style="margin-top:10px">{{ message }}</div>
+				  {% endif %}
+				  {% if message.tags == 'success' %}
+				  <div class="alert alert-success" style="margin-top:10px">{{ message }}</div>
+				  {% endif %}
+				  {% endfor %}
+				{% endif %}
+			  </div>		
+		</div>
+		</div>
+	</div>
+
+
+<div class="mobile-menu-overlay"></div>
+
+{% endblock main_content %}
